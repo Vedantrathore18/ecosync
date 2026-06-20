@@ -76,6 +76,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ results, inputs, onNavigat
   const potentialSavings = originalTotal - simulatedTotal;
   const percentSaved = originalTotal > 0 ? Math.round((potentialSavings / originalTotal) * 100) : 0;
 
+  // Convert kg to tonnes for display
+  const tonnesTotal = (originalTotal / 1000).toFixed(1);
+  const tonnesSimulated = (simulatedTotal / 1000).toFixed(1);
+  const tonnesSavings = (potentialSavings / 1000).toFixed(1);
+
   // Sync Daily Habits to localStorage
   useEffect(() => {
     localStorage.setItem('eco-daily-habits', JSON.stringify(dailyHabits));
@@ -174,6 +179,18 @@ Current Progress:
 - Waste/Trash Output:     ${inputs.wasteVolume.toUpperCase()} (Recycling rate: ${inputs.recyclingRate}%)
 - Shopping Habits:        ${inputs.shoppingHabits.toUpperCase()}
 
+--------------------------------------------------
+4. SIMULATED HABIT ADJUSTMENTS
+--------------------------------------------------
+- Simulated Footprint:   ${tonnesSimulated} tonnes CO2e/year
+- Potential Savings:     ${tonnesSavings} tonnes CO2e/year (-${percentSaved}%)
+- Applied Simulations:
+  * Car Commuting Reduction: -${carReduction}%
+  * Air Travel Reduction:    -${flightReduction}%
+  * Green Grid Power Share:   ${energyRenewable}% renewable
+  * Meat Intake Reduction:   -${meatReduction}%
+  * Waste Recycling Rate:    ${wasteRecycling}%
+
 ==================================================
            Thank you for utilizing EcoSync!
        Join the movement toward a net-zero future.
@@ -207,11 +224,6 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
   const resetDailyHabits = () => {
     setDailyHabits(prev => prev.map(h => ({ ...h, checked: false })));
   };
-
-  // Convert kg to tonnes for display
-  const tonnesTotal = (originalTotal / 1000).toFixed(1);
-  const tonnesSimulated = (simulatedTotal / 1000).toFixed(1);
-  const tonnesSavings = (potentialSavings / 1000).toFixed(1);
 
   // SVG Chart details
   const totalVal = results.travel + results.home + results.diet + results.waste;
@@ -343,7 +355,17 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
           <div style={{ display: 'flex', justifyContent: 'center', margin: 'var(--spacing-md) 0' }}>
             {/* Custom SVG Donut Chart */}
             <div style={{ position: 'relative', width: '180px', height: '180px' }}>
-              <svg width="100%" height="100%" viewBox="0 0 140 140" style={{ transform: 'rotate(-90deg)' }}>
+              <svg 
+                width="100%" 
+                height="100%" 
+                viewBox="0 0 140 140" 
+                style={{ transform: 'rotate(-90deg)' }}
+                role="img"
+                aria-labelledby="donut-chart-title"
+              >
+                <title id="donut-chart-title">
+                  Carbon emission shares: Travel {Math.round(travelPct)}%, Home Energy {Math.round(homePct)}%, Diet {Math.round(dietPct)}%, Waste {Math.round(wastePct)}%
+                </title>
                 <circle cx="70" cy="70" r={radius} fill="transparent" stroke="var(--bg-tertiary)" strokeWidth="18" />
                 
                 {/* Travel Arc */}
@@ -458,7 +480,6 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
             {dailyHabits.map((habit) => (
               <div 
                 key={habit.id} 
-                onClick={() => handleHabitToggle(habit.id)}
                 style={{ 
                   display: 'flex', 
                   alignItems: 'center', 
@@ -467,28 +488,39 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
                   borderRadius: 'var(--radius-md)',
                   backgroundColor: habit.checked ? 'rgba(16, 185, 129, 0.08)' : 'var(--bg-tertiary)',
                   border: `1px solid ${habit.checked ? 'var(--accent-primary)' : 'var(--border-glass)'}`,
-                  cursor: 'pointer',
                   transition: 'all 0.2s',
                 }}
               >
-                <input 
-                  type="checkbox" 
-                  checked={habit.checked} 
-                  onChange={() => {}} // Controlled by outer click
-                  style={{ width: '16px', height: '16px', accentColor: 'var(--accent-primary)', cursor: 'pointer' }}
-                />
-                <div style={{ flex: 1 }}>
-                  <span style={{ 
-                    fontSize: 'var(--font-sm)', 
-                    color: habit.checked ? 'var(--text-primary)' : 'var(--text-secondary)',
-                    textDecoration: habit.checked ? 'line-through' : 'none'
-                  }}>
-                    {habit.text}
-                  </span>
-                  <span style={{ display: 'block', fontSize: '10px', color: 'var(--accent-primary)', fontWeight: 'bold' }}>
-                    -{habit.co2} kg CO₂e saved today
-                  </span>
-                </div>
+                <label 
+                  htmlFor={`habit-checkbox-${habit.id}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--spacing-md)',
+                    width: '100%',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <input 
+                    id={`habit-checkbox-${habit.id}`}
+                    type="checkbox" 
+                    checked={habit.checked} 
+                    onChange={() => handleHabitToggle(habit.id)}
+                    style={{ width: '16px', height: '16px', accentColor: 'var(--accent-primary)', cursor: 'pointer' }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <span style={{ 
+                      fontSize: 'var(--font-sm)', 
+                      color: habit.checked ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      textDecoration: habit.checked ? 'line-through' : 'none'
+                    }}>
+                      {habit.text}
+                    </span>
+                    <span style={{ display: 'block', fontSize: '10px', color: 'var(--accent-primary)', fontWeight: 'bold' }}>
+                      -{habit.co2} kg CO₂e saved today
+                    </span>
+                  </div>
+                </label>
               </div>
             ))}
           </div>
@@ -522,10 +554,11 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <label className="form-label" style={{ margin: 0 }}>Reduce Car Commute</label>
+                <label className="form-label" htmlFor="sim-car-reduction" style={{ margin: 0 }}>Reduce Car Commute</label>
                 <span style={{ fontSize: 'var(--font-xs)', fontWeight: 'bold', color: 'var(--sky)' }}>{carReduction}% less</span>
               </div>
               <input
+                id="sim-car-reduction"
                 type="range"
                 min="0"
                 max="100"
@@ -539,10 +572,11 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
 
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <label className="form-label" style={{ margin: 0 }}>Reduce Flying</label>
+                <label className="form-label" htmlFor="sim-flight-reduction" style={{ margin: 0 }}>Reduce Flying</label>
                 <span style={{ fontSize: 'var(--font-xs)', fontWeight: 'bold', color: 'var(--sky)' }}>{flightReduction}% less</span>
               </div>
               <input
+                id="sim-flight-reduction"
                 type="range"
                 min="0"
                 max="100"
@@ -556,10 +590,11 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
 
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <label className="form-label" style={{ margin: 0 }}>Renewable Energy Share</label>
+                <label className="form-label" htmlFor="sim-energy-renewable" style={{ margin: 0 }}>Renewable Energy Share</label>
                 <span style={{ fontSize: 'var(--font-xs)', fontWeight: 'bold', color: 'var(--accent-primary)' }}>{energyRenewable}% green</span>
               </div>
               <input
+                id="sim-energy-renewable"
                 type="range"
                 min="0"
                 max="100"
@@ -576,10 +611,11 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <label className="form-label" style={{ margin: 0 }}>Reduce Meat Consumption</label>
+                <label className="form-label" htmlFor="sim-meat-reduction" style={{ margin: 0 }}>Reduce Meat Consumption</label>
                 <span style={{ fontSize: 'var(--font-xs)', fontWeight: 'bold', color: 'var(--mint)' }}>{meatReduction}% plant-based</span>
               </div>
               <input
+                id="sim-meat-reduction"
                 type="range"
                 min="0"
                 max="100"
@@ -593,10 +629,11 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
 
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <label className="form-label" style={{ margin: 0 }}>Increase Household Recycling</label>
+                <label className="form-label" htmlFor="sim-waste-recycling" style={{ margin: 0 }}>Increase Household Recycling</label>
                 <span style={{ fontSize: 'var(--font-xs)', fontWeight: 'bold', color: 'var(--coral)' }}>{wasteRecycling}% recycled</span>
               </div>
               <input
+                id="sim-waste-recycling"
                 type="range"
                 min="0"
                 max="100"

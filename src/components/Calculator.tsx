@@ -75,6 +75,11 @@ export const Calculator: React.FC<CalculatorProps> = ({ onCalculate, savedInputs
         />
         {/* Active progress indicator */}
         <div 
+          role="progressbar"
+          aria-valuenow={step}
+          aria-valuemin={0}
+          aria-valuemax={3}
+          aria-valuetext={`Step ${step + 1} of 4: ${stepsList[Math.min(step, 3)].title}`}
           style={{
             position: 'absolute',
             top: '20px',
