@@ -1,0 +1,130 @@
+/* CSS Variable System for EcoSync - Professional Editorial/Corporate Aesthetic */
+
+:root {
+  /* Fonts - Human and refined styling */
+  --font-heading: 'Lora', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  /* Theme Defaults (Default: Professional Forest Sanctuary Dark Mode) */
+  --bg-primary: #141715;
+  --bg-secondary: #1b201c;
+  --bg-tertiary: #252c26;
+  --bg-glass: rgba(27, 32, 28, 0.85);
+  --border-glass: rgba(255, 255, 255, 0.07);
+  --shadow-glass: rgba(0, 0, 0, 0.4);
+
+  --text-primary: #f2f4f2;
+  --text-secondary: #b8c4bc;
+  --text-muted: #7d8a81;
+
+  --accent-primary: #8eaba0; /* Muted corporate sage green */
+  --accent-secondary: #718d82;
+  --accent-glow: rgba(142, 171, 160, 0.08);
+  
+  --mint: #a1b8ae;
+  --sky: #a1b2bf; /* Soft slate/sky blue */
+  --coral: #d4a59a; /* Elegant terracotta */
+  --gold: #d8c7a6; /* Soft champagne sand */
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 3rem;
+
+  /* Border Radius - Muted, more geometric and crisp */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+
+  /* Font Sizes (with accessibility scale multiplier) */
+  --text-scale: 1; /* Default multiplier */
+  
+  --font-xs: calc(0.75rem * var(--text-scale));
+  --font-sm: calc(0.875rem * var(--text-scale));
+  --font-md: calc(1rem * var(--text-scale));
+  --font-lg: calc(1.125rem * var(--text-scale));
+  --font-xl: calc(1.25rem * var(--text-scale));
+  --font-2xl: calc(1.5rem * var(--text-scale));
+  --font-3xl: calc(1.875rem * var(--text-scale));
+  --font-4xl: calc(2.25rem * var(--text-scale));
+
+  /* Motion & Transitions - More subtle and professional */
+  --transition-speed: 0.25s;
+  --transition-bounce: cubic-bezier(0.16, 1, 0.3, 1); /* Sleek easeOutQuart instead of dramatic bounce */
+  --animation-multiplier: 1; 
+}
+
+/* Elegant Warm Stone Light Theme */
+[data-theme='light'] {
+  --bg-primary: #fbfaf8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f3f1ed;
+  --bg-glass: rgba(255, 255, 255, 0.88);
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --shadow-glass: rgba(24, 28, 25, 0.03);
+
+  --text-primary: #19211c;
+  --text-secondary: #515d55;
+  --text-muted: #828e86;
+
+  --accent-primary: #456353; /* Deep forest green */
+  --accent-secondary: #334a3e;
+  --accent-glow: rgba(69, 99, 83, 0.06);
+  
+  --mint: #567866;
+  --sky: #648196; /* Slate blue */
+  --coral: #bc796a; /* Rich terracotta */
+  --gold: #b39b78; /* Warm brass sand */
+}
+
+/* High Contrast Mode (WCAG AAA alignment) */
+[data-contrast='high'] {
+  --bg-primary: #000000 !important;
+  --bg-secondary: #000000 !important;
+  --bg-tertiary: #121212 !important;
+  --bg-glass: #000000 !important;
+  --border-glass: #ffffff !important;
+  --shadow-glass: none !important;
+
+  --text-primary: #ffffff !important;
+  --text-secondary: #f0f0f0 !important;
+  --text-muted: #d0d0d0 !important;
+
+  --accent-primary: #ffffff !important; 
+  --accent-secondary: #dddddd !important;
+  --accent-glow: transparent !important;
+  
+  --sky: #a1b2bf !important;
+  --coral: #d4a59a !important;
+  --gold: #d8c7a6 !important;
+  
+  --border-width-hc: 2px;
+}
+
+[data-contrast='high'][data-theme='light'] {
+  --bg-primary: #ffffff !important;
+  --bg-secondary: #ffffff !important;
+  --bg-tertiary: #f0f0f0 !important;
+  --bg-glass: #ffffff !important;
+  --border-glass: #000000 !important;
+
+  --text-primary: #000000 !important;
+  --text-secondary: #111111 !important;
+  --text-muted: #222222 !important;
+
+  --accent-primary: #000000 !important;
+  --accent-secondary: #222222 !important;
+  
+  --sky: #648196 !important;
+  --coral: #bc796a !important;
+}
+
+/* Motion Settings */
+[data-motion='reduced'] {
+  --transition-speed: 0s !important;
+  --animation-multiplier: 0 !important;
+}
