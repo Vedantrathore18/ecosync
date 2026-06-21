@@ -18,7 +18,6 @@ interface EmissionsOverviewProps {
   originalTotal: number;
   points: number;
   streak: number;
-  results: CarbonResults;
   copied: boolean;
   onExportReport: () => void;
   onCopyShareTemplate: () => void;
@@ -43,7 +42,6 @@ interface DailyHabitsListProps {
 }
 
 interface DynamicSimulatorProps {
-  inputs: CarbonInputs;
   carReduction: number;
   setCarReduction: (v: number) => void;
   flightReduction: number;
@@ -733,7 +731,6 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
         originalTotal={originalTotal}
         points={points}
         streak={streak}
-        results={results}
         copied={copied}
         onExportReport={handleExportReport}
         onCopyShareTemplate={handleCopyShareTemplate}
@@ -755,7 +752,6 @@ Take control of your footprint and build eco-friendly habits on EcoSync. Let's r
 
       {/* Habits reduction simulator slider area */}
       <DynamicSimulator 
-        inputs={inputs}
         carReduction={carReduction}
         setCarReduction={setCarReduction}
         flightReduction={flightReduction}

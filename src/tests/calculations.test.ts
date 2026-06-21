@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateCarbonFootprint, CarbonInputs, defaultInputs } from '../utils/calculations';
+import { calculateCarbonFootprint, calculateSimulatedCarbonFootprint, CarbonInputs, defaultInputs } from '../utils/calculations';
 
 describe('Carbon Footprint Calculation Suite', () => {
   it('should calculate non-zero carbon footprint for default inputs', () => {
@@ -183,5 +183,61 @@ describe('Carbon Footprint Calculation Suite', () => {
     }).waste;
     // 800 * (1 - 0.2) + 150 = 640 + 150 = 790
     expect(recycledHigh50).toBe(790);
+  });
+
+  it('should calculate simulated footprint accurately using calculateSimulatedCarbonFootprint', () => {
+    const baseInputs: CarbonInputs = {
+      ...defaultInputs,
+      carKm: 10000,
+      carFuelType: 'petrol',
+      flightsShort: 5,
+      flightsLong: 10,
+      transitHours: 2,
+      electricityKwh: 300,
+      greenEnergyPercent: 20,
+      heatingFuel: 'natural-gas',
+      heatingKwh: 400,
+      dietType: 'heavy-meat',
+      localFoodPercent: 10,
+      wasteVolume: 'average',
+      recyclingRate: 40,
+      shoppingHabits: 'heavy-consumer',
+    };
+
+    const simulations = {
+      carReduction: 50,
+      flightReduction: 0,
+      energyRenewable: 100,
+      meatReduction: 50,
+      wasteRecycling: 80,
+    };
+
+    const simulatedResults = calculateSimulatedCarbonFootprint(baseInputs, simulations);
+
+    // Baseline travel check:
+    // Car petrol emissions = 10000 * 0.17 = 1700, cut by 50% = 850
+    // Flights emissions = 5 * 150 + 10 * 110 = 750 + 1100 = 1850
+    // Transit emissions = 2 * 52 * 1.2 = 124.8
+    // Simulated travel = Math.round(850 + 1850 + 124.8) = 2825
+    expect(simulatedResults.travel).toBe(2825);
+
+    // Simulated home should have electricity cut to 100% green = 0
+    // Heating natural-gas = 400 * 12 * 0.18 = 864
+    // Simulated home = Math.round(0 + 864) = 864
+    expect(simulatedResults.home).toBe(864);
+
+    // Simulated diet should have meat reduction at 50%
+    // Heavy meat base = 2500, vegan base = 500
+    // Simulated diet base = 2500 * 0.5 + 500 * 0.5 = 1500
+    // Local food offset factor = 0.1 * 0.1 = 0.01
+    // Diet total = 1500 * 0.99 = 1485
+    expect(simulatedResults.diet).toBe(1485);
+
+    // Simulated waste:
+    // Average waste = 500, recyclingOffset = 0.4 * 0.8 = 0.32
+    // Waste component = 500 * 0.68 = 340
+    // Shopping component = 1200
+    // Simulated waste total = 340 + 1200 = 1540
+    expect(simulatedResults.waste).toBe(1540);
   });
 });
