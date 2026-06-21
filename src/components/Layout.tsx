@@ -23,42 +23,17 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Navigation Header */}
-      <header 
-        className="glass-panel" 
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-          borderRadius: 0,
-          borderTop: 'none',
-          borderLeft: 'none',
-          borderRight: 'none',
-          padding: 'var(--spacing-md) var(--spacing-xl)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <header className="glass-panel app-header">
         {/* Brand logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-          <div 
-            style={{
-              background: 'linear-gradient(135deg, var(--accent-primary), var(--mint))',
-              color: '#0b0f19',
-              padding: '8px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className="logo-container">
             <Leaf size={24} />
           </div>
           <div>
-            <h1 style={{ fontSize: 'var(--font-xl)', letterSpacing: '-0.02em', fontWeight: 800 }}>
+            <h1 className="logo-title">
               EcoSync
             </h1>
-            <span style={{ fontSize: '10px', color: 'var(--text-secondary)', display: 'block', marginTop: '-2px' }}>
+            <span className="logo-subtitle">
               Personal Carbon Reduction
             </span>
           </div>
@@ -76,15 +51,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
                   setActiveTab(item.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: 'var(--font-sm)',
-                  backgroundColor: isActive ? 'var(--accent-primary)' : 'transparent',
-                  color: isActive ? '#052e16' : 'var(--text-primary)',
-                  border: isActive ? 'none' : '1px solid transparent',
-                }}
+                className={`btn nav-btn ${isActive ? 'active' : ''}`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <Icon size={16} />
@@ -95,17 +62,10 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
         </nav>
 
         {/* Action controls */}
-        <div style={{ display: 'flex', gap: 'var(--spacing-sm)', alignItems: 'center' }}>
+        <div className="header-actions">
           <button
             onClick={() => setAccessSettingsOpen(!accessSettingsOpen)}
-            className="btn btn-secondary"
-            style={{
-              padding: '10px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className="btn btn-secondary icon-btn-round"
             aria-label="Open accessibility menu"
             title="Accessibility Menu"
           >
@@ -115,14 +75,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
           {/* Hamburger (Mobile) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="btn btn-secondary mobile-only"
-            style={{
-              padding: '10px',
-              borderRadius: '50%',
-              display: 'none', // Overridden in responsive CSS or styling
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className="btn btn-secondary mobile-only icon-btn-round"
+            style={{ display: 'none' }}
             aria-label="Toggle Navigation Menu"
           >
             {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -132,21 +86,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div 
-          className="glass-panel mobile-only" 
-          style={{
-            position: 'fixed',
-            top: '72px',
-            left: '20px',
-            right: '20px',
-            zIndex: 49,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--spacing-sm)',
-            borderTopLeftRadius: 0,
-            borderTopRightRadius: 0,
-          }}
-        >
+        <div className="glass-panel mobile-only mobile-nav-menu">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -157,12 +97,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
                   setActiveTab(item.id);
                   setMobileMenuOpen(false);
                 }}
-                className={`btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
-                style={{
-                  width: '100%',
-                  justifyContent: 'flex-start',
-                  padding: '12px 16px',
-                }}
+                className={`btn mobile-nav-btn ${isActive ? 'btn-primary' : 'btn-secondary'}`}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <Icon size={18} />
@@ -174,37 +109,15 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
       )}
 
       {/* Core Main Content Area */}
-      <main style={{ flex: 1, padding: 'var(--spacing-xl) 0' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 var(--spacing-lg)' }}>
+      <main className="main-content">
+        <div className="main-container">
           {children}
         </div>
       </main>
 
       {/* Footer */}
-      <footer 
-        className="glass-panel" 
-        style={{
-          borderRadius: 0,
-          borderBottom: 'none',
-          borderLeft: 'none',
-          borderRight: 'none',
-          padding: 'var(--spacing-xl) var(--spacing-lg)',
-          marginTop: 'var(--spacing-xxl)',
-          textAlign: 'center',
-        }}
-      >
-        <div 
-          style={{
-            maxWidth: '1200px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--spacing-md)',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-          className="footer-content"
-        >
+      <footer className="glass-panel app-footer">
+        <div className="footer-container footer-content">
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
             <Leaf size={18} style={{ color: 'var(--accent-primary)' }} />
             <span style={{ fontWeight: 600, fontFamily: 'var(--font-heading)' }}>EcoSync</span>
@@ -214,11 +127,11 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
             </span>
           </div>
 
-          <div style={{ display: 'flex', gap: 'var(--spacing-lg)', fontSize: 'var(--font-xs)', color: 'var(--text-muted)' }}>
+          <div className="footer-text-row">
             <span>Calculations based on EPA, DEFRA, and IPCC methodologies.</span>
           </div>
 
-          <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+          <p className="copyright-text">
             &copy; {new Date().getFullYear()} EcoSync Carbon Tracker. Build with clean, modern web standards.
           </p>
         </div>

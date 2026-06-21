@@ -37,6 +37,10 @@ export const App: React.FC = () => {
     return Number(localStorage.getItem('eco-user-points')) || 0;
   });
 
+  const [streak, setStreak] = useState<number>(() => {
+    return Number(localStorage.getItem('eco-user-streak')) || 0;
+  });
+
   const [notification, setNotification] = useState<{ show: boolean; msg: string; type: 'points' | 'info' }>({
     show: false,
     msg: '',
@@ -45,21 +49,31 @@ export const App: React.FC = () => {
 
   const handlePointsEarned = (pts: number) => {
     setPoints(prev => {
-      const newVal = prev + pts;
+      const newVal = Math.max(0, prev + pts);
       localStorage.setItem('eco-user-points', newVal.toString());
       return newVal;
     });
 
-    // Show points notification popup
-    setNotification({
-      show: true,
-      msg: `+${pts} Eco-Hero Points Earned!`,
-      type: 'points'
-    });
+    if (pts > 0) {
+      // Show points notification popup
+      setNotification({
+        show: true,
+        msg: `+${pts} Eco-Hero Points Earned!`,
+        type: 'points'
+      });
 
-    setTimeout(() => {
-      setNotification(prev => ({ ...prev, show: false }));
-    }, 3000);
+      setTimeout(() => {
+        setNotification(prev => ({ ...prev, show: false }));
+      }, 3000);
+    }
+  };
+
+  const handleStreakIncrement = () => {
+    setStreak(prev => {
+      const newVal = prev + 1;
+      localStorage.setItem('eco-user-streak', newVal.toString());
+      return newVal;
+    });
   };
 
   const handleCalculate = (newInputs: CarbonInputs) => {
@@ -85,7 +99,8 @@ export const App: React.FC = () => {
   // Synchronize points to localStorage on state changes
   useEffect(() => {
     localStorage.setItem('eco-user-points', points.toString());
-  }, [points]);
+    localStorage.setItem('eco-user-streak', streak.toString());
+  }, [points, streak]);
 
   return (
     <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
@@ -131,6 +146,10 @@ export const App: React.FC = () => {
           <Dashboard 
             results={results} 
             inputs={inputs} 
+            points={points}
+            streak={streak}
+            onPointsEarned={handlePointsEarned}
+            onStreakIncrement={handleStreakIncrement}
             onNavigateToRoadmap={() => setActiveTab('roadmap')} 
           />
         ) : (

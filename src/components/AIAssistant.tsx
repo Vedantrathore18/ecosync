@@ -91,95 +91,35 @@ How would you like to proceed? You can click one of the quick options below or a
   ];
 
   return (
-    <div className="fade-in assistant-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 'var(--spacing-xl)' }}>
+    <div className="fade-in assistant-grid">
       {/* Active Chat Window */}
-      <div 
-        className="glass-panel" 
-        style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          height: '520px',
-          justifyContent: 'space-between',
-          padding: 'var(--spacing-md)'
-        }}
-      >
+      <div className="glass-panel chat-panel">
         {/* Chat Messages Log */}
-        <div 
-          style={{ 
-            flex: 1, 
-            overflowY: 'auto', 
-            paddingRight: '4px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--spacing-md)',
-            marginBottom: 'var(--spacing-md)'
-          }}
-        >
+        <div className="chat-messages-log">
           {messages.map((msg, idx) => {
             const isBot = msg.sender === 'assistant';
             return (
               <div 
                 key={idx} 
-                style={{ 
-                  display: 'flex', 
-                  gap: 'var(--spacing-sm)', 
-                  alignItems: 'flex-start',
-                  alignSelf: isBot ? 'flex-start' : 'flex-end',
-                  maxWidth: '85%'
-                }}
+                className={`msg-wrapper ${isBot ? 'msg-bot' : 'msg-user'}`}
               >
                 {isBot && (
-                  <div 
-                    style={{ 
-                      width: '32px', 
-                      height: '32px', 
-                      borderRadius: '50%', 
-                      backgroundColor: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-glass)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--accent-primary)',
-                      flexShrink: 0
-                    }}
-                  >
+                  <div className="avatar-bot">
                     <Bot size={16} />
                   </div>
                 )}
                 
                 <div 
-                  style={{
-                    backgroundColor: isBot ? 'var(--bg-tertiary)' : 'var(--accent-primary)',
-                    color: isBot ? 'var(--text-primary)' : 'var(--bg-primary)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: 'var(--spacing-sm) var(--spacing-md)',
-                    fontSize: 'var(--font-sm)',
-                    lineHeight: 1.5,
-                    border: isBot ? '1px solid var(--border-glass)' : 'none',
-                    whiteSpace: 'pre-line' // respects double line breaks
-                  }}
-                  className="msg-bubble"
+                  className={`msg-bubble ${isBot ? 'msg-bubble-bot' : 'msg-bubble-user'}`}
                 >
                   {/* Simplistic bolding parser for display */}
                   {msg.text.split('**').map((chunk, cIdx) => 
-                    cIdx % 2 === 1 ? <strong key={cIdx} style={{ color: isBot ? 'var(--accent-primary)' : 'inherit' }}>{chunk}</strong> : chunk
+                    cIdx % 2 === 1 ? <strong key={cIdx} className={isBot ? "assistant-bold-text-bot" : ""}>{chunk}</strong> : chunk
                   )}
                 </div>
 
                 {!isBot && (
-                  <div 
-                    style={{ 
-                      width: '32px', 
-                      height: '32px', 
-                      borderRadius: '50%', 
-                      backgroundColor: 'var(--accent-primary)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--bg-primary)',
-                      flexShrink: 0
-                    }}
-                  >
+                  <div className="avatar-user">
                     <User size={16} />
                   </div>
                 )}
@@ -192,27 +132,20 @@ How would you like to proceed? You can click one of the quick options below or a
         {/* Input Bar and Controls */}
         <form 
           onSubmit={(e) => { e.preventDefault(); handleSend(inputVal); }}
-          style={{ 
-            display: 'flex', 
-            gap: 'var(--spacing-sm)', 
-            borderTop: '1px solid var(--border-glass)', 
-            paddingTop: 'var(--spacing-md)' 
-          }}
+          className="chat-input-form"
         >
           <input
             id="chat-input"
             type="text"
-            className="form-input"
+            className="form-input chat-input-field"
             placeholder="Ask me a question about your carbon footprint..."
             aria-label="Query the Eco-Coach assistant"
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
-            style={{ flex: 1, padding: '10px 12px' }}
           />
           <button 
             type="submit" 
-            className="btn btn-primary"
-            style={{ padding: '10px 14px' }}
+            className="btn btn-primary chat-send-btn"
             aria-label="Send message"
           >
             <Send size={16} />
@@ -221,66 +154,60 @@ How would you like to proceed? You can click one of the quick options below or a
       </div>
 
       {/* Right Column: Profile Context and Quick Prompts */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
+      <div className="sidebar-col">
         {/* Profile Context Drawer */}
-        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-          <h3 style={{ fontSize: 'var(--font-md)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={18} style={{ color: 'var(--accent-primary)' }} />
+        <div className="glass-panel profile-context-drawer">
+          <h3 className="ai-sidebar-header">
+            <Sparkles size={18} className="text-accent-primary" />
             Active Intelligent Context
           </h3>
-          <p style={{ fontSize: 'var(--font-xs)', color: 'var(--text-secondary)' }}>
+          <p className="ai-sidebar-desc">
             The assistant has loaded your calculations data to make reasoning decisions:
           </p>
           
-          <div style={{ fontSize: 'var(--font-xs)', display: 'flex', flexDirection: 'column', gap: '6px', marginTop: 'var(--spacing-xs)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '4px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Total Emissions:</span>
+          <div className="context-list">
+            <div className="context-item">
+              <span className="text-secondary-color">Total Emissions:</span>
               <strong>{tonnesTotal} tonnes CO₂e/yr</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '4px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Highest Source:</span>
-              <strong style={{ color: 'var(--coral)' }}>{highest.label}</strong>
+            <div className="context-item">
+              <span className="text-secondary-color">Highest Source:</span>
+              <strong className="text-coral">{highest.label}</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '4px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Car Fuel Type:</span>
-              <span style={{ textTransform: 'capitalize' }}>{inputs.carFuelType}</span>
+            <div className="context-item">
+              <span className="text-secondary-color">Car Fuel Type:</span>
+              <span className="text-capitalize">{inputs.carFuelType}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '4px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Electricity Renewable:</span>
+            <div className="context-item">
+              <span className="text-secondary-color">Electricity Renewable:</span>
               <span>{inputs.greenEnergyPercent}%</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '4px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Diet Profile:</span>
-              <span style={{ textTransform: 'capitalize' }}>{inputs.dietType}</span>
+            <div className="context-item">
+              <span className="text-secondary-color">Diet Profile:</span>
+              <span className="text-capitalize">{inputs.dietType}</span>
             </div>
           </div>
         </div>
 
         {/* Quick Questions suggestions */}
-        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-          <h3 style={{ fontSize: 'var(--font-md)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <HelpCircle size={18} style={{ color: 'var(--sky)' }} />
+        <div className="glass-panel suggested-prompts-drawer">
+          <h3 className="ai-sidebar-header">
+            <HelpCircle size={18} className="text-sky" />
             Suggested Prompts
           </h3>
-          <p style={{ fontSize: 'var(--font-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--spacing-xs)' }}>
+          <p className="suggested-prompts-desc">
             Click a suggestion to query the EcoSync assistant instantly:
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+          <div className="suggested-prompts-list">
             {quickQuestions.map((q, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(q.short)}
-                className="btn btn-secondary"
-                style={{ 
-                  textAlign: 'left', 
-                  justifyContent: 'space-between', 
-                  padding: '8px 12px',
-                  fontSize: 'var(--font-xs)'
-                }}
+                className="btn btn-secondary suggested-prompt-btn"
               >
                 <span>{q.text}</span>
-                <ArrowRight size={12} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                <ArrowRight size={12} className="suggested-prompt-icon" />
               </button>
             ))}
           </div>

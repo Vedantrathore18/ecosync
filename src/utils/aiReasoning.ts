@@ -1,5 +1,15 @@
 import { CarbonInputs, CarbonResults } from './calculations';
 
+/**
+ * Generates an automated, contextual eco-advice response based on the user's carbon inputs, 
+ * footprint results, current point total, and highest emission sector.
+ * @param query - The user's query or category search string
+ * @param inputs - Original carbon profile inputs
+ * @param results - Calculated annual carbon emissions
+ * @param points - User's current gamified Eco-Hero points
+ * @param highest - Information about the user's highest emitting sector
+ * @returns Contextual advice or fallback instructions as a markdown string
+ */
 export function generateBotResponse(
   query: string,
   inputs: CarbonInputs,
